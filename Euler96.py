@@ -16,27 +16,21 @@ def getPuzzles(s):
     for x in range(0, 100):
         print("char", x, lines[1][x])
 
-def printPuzzle(puzzle):
-    for row in puzzle:
-        print(row)
-
 def valid(puzzle):
     t = set()
-    t.update([1,2,3,4,5,6,7,8,9])
+    t.update(range(1,10))
 
     # Check Horizontal Rows
     for hRow in puzzle:
         s = set()
-        for cell in hRow:
-            s.add(cell)
+        s.update([cell for cell in hRow])
         if not s == t:
             return False
 
     # Check Vertical Rows
     for x in range(0,9):
         s = set()
-        for y in range(0,9):
-            s.add(puzzle[y][x])
+        s.update([puzzle[y][x] for y in range(0,9)])
         if not s == t:
             return False
 
@@ -49,9 +43,6 @@ def valid(puzzle):
                     s.add(puzzle[x][y])
             if not s == t:
                 return False
-
-    if max([cell for row in puzzle for cell in row]) > 9:
-        return False
     return True
 
 def getCands(x, y, puzzle):
@@ -75,32 +66,28 @@ def getCands(x, y, puzzle):
     return list(s.symmetric_difference(t))
 
 def solve(puzzle):
-    # Base Case:
-    if 0 not in puzzle and valid(puzzle) is True:
+    # Base Cases:
+    if max([cell for row in puzzle for cell in row]) > 9:
+        return []
+    elif 0 not in puzzle and valid(puzzle) is True:
         return puzzle
 
     # Reduction Step:
     for x in range(0,9):
         for y in range(0,9):
-            if puzzle[x][y]>9:
-                return []
             if puzzle[x][y] == 0:
                 cands = getCands(x, y, puzzle)
                 if len(cands)== 0:
                     return []
-
                 temp_table = []
                 for n in cands:
                     puzzle = [row[:] for row in puzzle]
                     puzzle[x][y] = n
-
                     temp_table = solve(puzzle)
-
                     if temp_table:
                         puzzle = [row[:] for row in temp_table]
                         if valid(puzzle):
                             return puzzle
-
                 if not temp_table:
                     return []
 
@@ -147,13 +134,11 @@ def main():
                         [0,9,0,0,0,0,4,0,0]]
 
     t1 = time.time()
-    fin = solve(superHard_puzzle)
+    fin = solve(_puzzle)
     print((time.time() - t1)*1000, "ms")
 
     for row in fin:
         print(row)
-
-
 
 if __name__ == "__main__":
     main()
