@@ -1,46 +1,11 @@
 import time
 
-def valid(puzzle):
-    t = set()
-    t.update(range(1,10))
-
-    # Check Horizontal Rows
-    for hRow in puzzle:
-        s = set()
-        s.update([cell for cell in hRow])
-        if not s == t:
-            return False
-
-    # Check Vertical Rows
-    for x in range(0,9):
-        s = set()
-        s.update([puzzle[y][x] for y in range(0,9)])
-        if not s == t:
-            return False
-
-    # Check Blocks
-    for a in range(0,3):
-        for b in range(0,3):
-            s = set()
-            for x in range(0+a*3,3+a*3):
-                for y in range(0+b*3,3+b*3):
-                    s.add(puzzle[x][y])
-            if not s == t:
-                return False
-    return True
-
 def getCands(x, y, puzzle):
-    t = set()
-    s = set()
+    t, s = set(), set()
     t.update(range(1, 10))
 
-    for a in range(0,9):
-        if not puzzle[x][a] == 0:
-            s.add(puzzle[x][a])
-
-    for b in range(0,9):
-        if not puzzle[b][y] == 0:
-            s.add(puzzle[b][y])
+    s.update([puzzle[x][a] for a in range(0,9) if not puzzle[x][a] == 0])
+    s.update([puzzle[b][y] for b in range(0,9) if not puzzle[b][y] == 0])
 
     for c in range((x//3)*3, (x//3)*3+3):
         for d in range((y//3)*3, (y//3)*3+3):
@@ -72,15 +37,12 @@ def solve(puzzle):
                     temp_table = solve(puzzle)
                     if temp_table:
                         puzzle = [row[:] for row in temp_table]
-                        if valid(puzzle):
+                        if 0 not in puzzle:
                             return puzzle
                 if not temp_table:
                     return []
-
     # Base Cases:
-    if max([cell for row in puzzle for cell in row]) > 9:
-        return []
-    elif 0 not in puzzle and valid(puzzle) is True:
+    if 0 not in puzzle:
         return puzzle
 
 def getPuzzles(s):
