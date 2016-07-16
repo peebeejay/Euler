@@ -1,20 +1,4 @@
-""" Euler96 is a Sudoku Solving Problem"""
-import math
 import time
-
-def getPuzzles(s):
-    # Currently returns only the first table
-
-    with open(s) as f:
-        lines = f.read()
-    lines = lines.split('Grid')
-    '''for x, line in enumerate(lines):
-        print(line)
-        if x == 10:
-            break'''
-
-    for x in range(0, 100):
-        print("char", x, lines[1][x])
 
 def valid(puzzle):
     t = set()
@@ -66,13 +50,15 @@ def getCands(x, y, puzzle):
     return list(s.symmetric_difference(t))
 
 def solve(puzzle):
-    # Base Cases:
-    if max([cell for row in puzzle for cell in row]) > 9:
-        return []
-    elif 0 not in puzzle and valid(puzzle) is True:
-        return puzzle
+    # Reduction Steps:
+    for i in range(0,9):
+        for j in range(0,9):
+            if puzzle[i][j] == 0:
+                cands = getCands(i, j, puzzle)
+                if len(cands) == 1:
+                    puzzle = [row[:] for row in puzzle]
+                    puzzle[i][j] = cands.pop()
 
-    # Reduction Step:
     for x in range(0,9):
         for y in range(0,9):
             if puzzle[x][y] == 0:
@@ -91,37 +77,30 @@ def solve(puzzle):
                 if not temp_table:
                     return []
 
+    # Base Cases:
+    if max([cell for row in puzzle for cell in row]) > 9:
+        return []
+    elif 0 not in puzzle and valid(puzzle) is True:
+        return puzzle
+
+def getPuzzles(s):
+    puzzles = []
+    with open(s) as f:
+        lines = f.read()
+    lines = lines.split('Grid')
+    lines.pop(0)
+
+    for puzzle in lines:
+        p = []
+        for x in range(0, 9):
+            l = []
+            l.extend([int(cell) for cell in puzzle[4+x*10:13+x*10]])
+            p.append(l)
+        puzzles.append(p)
+    return puzzles
+
 def main():
-    # getPuzzles(r'C:\Users\Jay Puntham-Baker\Documents\Programs\Euler\p096_sudoku.txt')
-    _puzzle = [[0,0,3,0,2,0,6,0,0],
-              [9,0,0,3,0,5,0,0,1],
-              [0,0,1,8,0,6,4,0,0],
-              [0,0,8,1,0,2,9,0,0],
-              [7,0,0,0,0,0,0,0,8],
-              [0,0,6,7,0,8,2,0,0],
-              [0,0,2,6,0,9,5,0,0],
-              [8,0,0,2,0,3,0,0,9],
-              [0,0,5,0,1,0,3,0,0]]
-
-    medium_puzzle = [[0,0,0,6,8,0,0,0,1],
-                     [9,8,3,0,5,0,0,0,0],
-                     [0,0,0,0,0,0,5,0,0],
-                     [4,9,0,0,7,0,1,0,5],
-                     [0,0,0,0,0,0,0,0,0],
-                     [2,0,5,0,4,0,0,7,8],
-                     [0,0,4,0,0,0,0,0,0],
-                     [0,0,0,0,2,0,3,5,6],
-                     [5,0,0,0,9,8,0,0,0]]
-
-    hard_puzzle = [[0,8,0,0,0,0,0,0,0],
-                   [0,0,9,1,0,0,2,0,0],
-                   [4,1,0,0,5,0,3,0,7],
-                   [0,0,0,6,0,0,0,0,0],
-                   [9,4,0,8,0,1,0,7,2],
-                   [0,0,0,0,0,9,0,0,0],
-                   [6,0,8,0,7,0,0,1,3],
-                   [0,0,3,0,0,0,8,0,0],
-                   [0,0,0,0,0,0,0,9,0]]
+    puzzles = getPuzzles(r'C:\Users\Jay Puntham-Baker\Documents\Programs\Euler\p096_sudoku.txt')
 
     superHard_puzzle = [[8,0,0,0,0,0,0,0,0],
                         [0,0,3,6,0,0,0,0,0],
@@ -134,11 +113,8 @@ def main():
                         [0,9,0,0,0,0,4,0,0]]
 
     t1 = time.time()
-    fin = solve(_puzzle)
+    print(sum([int(''.join(str(_) for _ in solve(puzzle)[0][0:3])) for puzzle in puzzles]))
     print((time.time() - t1)*1000, "ms")
-
-    for row in fin:
-        print(row)
 
 if __name__ == "__main__":
     main()
