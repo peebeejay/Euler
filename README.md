@@ -1,3 +1,3 @@
 # Euler
 
-A collection of interesting Project Euler solutions
+A collection of interesting solutions to Project Euler problems
