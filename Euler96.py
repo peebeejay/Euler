@@ -11,11 +11,11 @@ def getCands(x, y, puzzle):
     T, S = set(), set()
     T.update(range(1, 10))
 
-    # Add numbers found vertically and horizontally to set s
+    # Add numbers found vertically and horizontally from puzzle[x][y] to set S
     S.update([puzzle[x][a] for a in range(0,9) if not puzzle[x][a] == 0])
     S.update([puzzle[b][y] for b in range(0,9) if not puzzle[b][y] == 0])
 
-    # Add numbers found in 3x3 cell to set s
+    # Add numbers found in 3x3 cell relative to puzzle[x][y] to set S
     for c in range((x//3)*3, (x//3)*3+3):
         for d in range((y//3)*3, (y//3)*3+3):
             if not puzzle[c][d] == 0:
@@ -85,7 +85,7 @@ def main():
                         [0,9,0,0,0,0,4,0,0]]
 
     t1 = time.time()
-    # Concatenates the 3 values found in the top row on the upper left ~ [0][0:3]
+    # Concatenates the 3 values found in the top row on the upper left ~ ''.join([0][0:3])
     # Sums the values for all 50 puzzles in text file
     print(sum([int(''.join(str(_) for _ in solve(puzzle)[0][0:3])) for puzzle in puzzles]))
     print((time.time() - t1)*1000, "ms")
