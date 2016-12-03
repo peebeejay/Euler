@@ -12,8 +12,8 @@ def getCands(x, y, puzzle):
     T.update(range(1, 10))
 
     # Add numbers found vertically and horizontally from puzzle[x][y] to set S
-    S.update([puzzle[x][a] for a in range(0,9) if not puzzle[x][a] == 0])
-    S.update([puzzle[b][y] for b in range(0,9) if not puzzle[b][y] == 0])
+    S.update([puzzle[x][a] for a in range(0, 9) if not puzzle[x][a] == 0])
+    S.update([puzzle[b][y] for b in range(0, 9) if not puzzle[b][y] == 0])
 
     # Add numbers found in 3x3 cell relative to puzzle[x][y] to set S
     for c in range((x//3)*3, (x//3)*3+3):
@@ -27,8 +27,8 @@ def getCands(x, y, puzzle):
 def solve(puzzle):
     # Reduction Steps:
     # 1. Check for single solutions
-    for i in range(0,9):
-        for j in range(0,9):
+    for i in range(0, 9):
+        for j in range(0, 9):
             if puzzle[i][j] == 0:
                 cands = getCands(i, j, puzzle)
                 if len(cands) == 1:
@@ -36,11 +36,11 @@ def solve(puzzle):
                     puzzle[i][j] = cands.pop()
 
     # 2. Recurse when multiple solutions possible
-    for x in range(0,9):
-        for y in range(0,9):
+    for x in range(0, 9):
+        for y in range(0, 9):
             if puzzle[x][y] == 0:
                 cands = getCands(x, y, puzzle)
-                if len(cands)== 0:
+                if len(cands) == 0:
                     return []
 
                 for n in cands:
@@ -84,11 +84,17 @@ def main():
                         [0,0,8,5,0,0,0,1,0],
                         [0,9,0,0,0,0,4,0,0]]
 
-    t1 = time.time()
     # Concatenates the 3 values found in the top row on the upper left ~ ''.join([0][0:3])
     # Sums the values for all 50 puzzles in text file
+    # A little code golf is ok every now and then
+    t1 = time.time()
     print(sum([int(''.join(str(_) for _ in solve(puzzle)[0][0:3])) for puzzle in puzzles]))
-    print((time.time() - t1)*1000, "ms")
+    print((time.time() - t1) * 1000, "ms")
+
+    # Non-code-golf code
+    # topThree_Lists = [solve(puzzle)[0][0:3] for puzzle in puzzles]
+    # topThree_Numbers = [''.join((str(_) for _ in nums)) for nums in topThree_Lists]
+    # print(sum([int(num) for num in topThree_Numbers]))
 
 if __name__ == "__main__":
     main()
