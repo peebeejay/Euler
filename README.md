@@ -2,6 +2,7 @@
 
 A collection of interesting solutions to Project Euler problems:  
 Euler24 - Permutation Generator  
+Euler31 - Coin Sum Problem  
 Euler41 - Largest Pandigital Prime  
 Euler42 - Coded Triangle Numbers  
 Euler44 - Pentagon Numbers  
